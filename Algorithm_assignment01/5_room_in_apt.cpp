@@ -8,26 +8,27 @@ vector<pair<int, int>> direction = {{0, 1}, {0, -1}, {1, 0}, {-1, 0}};
 
 int row, col;
 
-bool valid(int x, int y)
+bool valid(int si, int sj)
 {
-    return x >= 0 && x < row && y >= 0 && y < col && graph[x][y] == '.'; 
+    return si >= 0 && si < row && sj >= 0 && sj < col && graph[si][sj] == '.' && !isVisited[si][sj];
 }
 
-int dfs(int sr, int sc)
+int dfs(int si, int sj)
 {
-    isVisited[sr][sc] = true;
+    isVisited[si][sj] = true;
     int roomSize = 1;
 
     for (int i = 0; i < 4; i++)
     {
-        int child_row = sr + direction[i].first;
-        int child_col = sc + direction[i].second;
+        int child_i = si + direction[i].first;
+        int child_y = sj + direction[i].second;
 
-        if (valid(child_row, child_col) && !isVisited[child_row][child_col])
+        if (valid(child_i, child_y))
         {
-            roomSize += dfs(child_row, child_col); 
+            roomSize += dfs(child_i, child_y);
         }
     }
+
     return roomSize;
 }
 
@@ -35,17 +36,11 @@ int main()
 {
     cin >> row >> col;
 
-    if (row <= 0 || col <= 0) {
-        return 0;
-    }
-
-    for (int i = 0; i < row; i++) {
-        for (int j = 0; j < col; j++) {
+    for (int i = 0; i < row; i++)
+    {
+        for (int j = 0; j < col; j++)
+        {
             cin >> graph[i][j];
-            if (graph[i][j] != '.' && graph[i][j] != '#' ) {
-                cout << -1 << endl;
-                return 0;
-            }
         }
     }
 
@@ -59,15 +54,15 @@ int main()
         {
             if (graph[i][j] == '.' && !isVisited[i][j])
             {
-                int roomSize = dfs(i, j);
-                roomSizes.push_back(roomSize);
+                int size = dfs(i, j);
+                roomSizes.push_back(size);
             }
         }
     }
 
     if (roomSizes.empty())
     {
-        cout << -1 << endl;
+        cout << 0 << endl;
     }
     else
     {
